@@ -1,0 +1,238 @@
+paths:
+  /api/c/:
+    post:
+      summary: Crear un carrito
+      tags:
+      - Carts
+      responses:
+        "200":
+          description: El carrito fue creado con exito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Cart'
+        "500":
+          description: Error interno del servidor
+  /api/c/{cid}:
+    get:
+      summary: Obtener un carrito por su id
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: cid pa
+          schema:
+            type: string
+      responses:
+        "200":
+          description: El carrito fue obtenido correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Cart"
+        "500":
+          description: Id no encontrado
+    delete:
+      summary: Borrar carrito
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: cid pa
+          schema:
+            $type: string
+      responses:
+        "200":
+          description: El carrito fue borrado correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Cart'
+        "500":
+          description: Id no encontrado
+  /api/c/{cid}/products/{pid}:
+    delete:
+      summary: Borrar producto dentro del carrito con el cid y el pid
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: cid pa
+          schema:
+            $type: integer
+        - name: pid
+          in: path
+          required: true
+          description: pid pa
+          schema:
+            $type: integer
+      responses:
+        "200":
+          description: El producto del carrito fue eliminado correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/Cart"
+        "500":
+          description: Id no encontrado
+    put:
+      summary: Modificar la cantidad de un producto mediante el cid y el pid
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: cid pa
+          schema:
+            $type: integer
+        - name: pid
+          in: path
+          required: true
+          description: pid pa
+          schema:
+            $type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateQuantity'
+      responses:
+        "200":
+          description: El producto del carrito fue modificado correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/Cart"
+        "500":
+          description: Id no encontrado
+    post:
+      summary: Agregar producto al carrito
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: cid pa
+          schema:
+            $type: integer
+        - name: pid
+          in: path
+          required: true
+          description: pid pa
+          schema:
+            $type: integer
+      responses:
+        "200":
+          description: El producto fue agregado al carrito correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/Cart"
+        "500":
+          description: Id no encontrado
+  /api/c/{cid}/purchase:
+    post:
+      summary: Purchase carrito con id
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: cid pa
+          schema:
+            $type: string
+      responses:
+        "200":
+          description: Compro correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/Cart"
+        "500":
+          description: Id no encontrado
+components:
+  schemas:
+    Cart:
+      type: Object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id autogenerado por mongo
+        products:
+          type: array
+          description: Array de productos del carrito
+          items:
+            $ref: '#/components/schemas/CartItem'
+    Product:
+      type: Object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id autogenerado por mongo
+        title: 
+          type: String
+          description: Nombre del producto
+        description:
+          type: String
+          description: Descripcion del producto
+        price: 
+          type: Number
+          description: Precio del producto
+        thumbnail:
+          type: String
+          description: Imagen del producto
+        code: 
+          type: Number
+          desciption: Codigo del producto
+        stock: 
+          type: Number
+          description: Stock del producto
+        category: 
+          type: String
+          description: Categoria del producto
+        status:
+          type: Boolean
+          description: Status del producto
+    CartItem:
+      type: Object
+      properties:
+        product:
+          $ref: '#/components/schemas/Product'
+        quantity:
+          type: integer
+          description: La cantidad del producto en el carrito
+  requestBodies:
+      updateCart:
+        type: Object
+        properties:
+          products:
+            type: array
+            description: array de productos y cantidad
+      updateQuantity:
+        type: Object
+        properties:
+          quantity:
+            type: integer
+            description: quantity
